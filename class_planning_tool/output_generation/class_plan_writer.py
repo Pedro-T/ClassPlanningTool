@@ -31,8 +31,8 @@ def write_header(ws: Worksheet) -> None:
     Args:
         sheet (Worksheet): the sheet to modify
     """
-    ws.merge_cells("A2:G2")
-    title_cell: Cell = ws["A2"]
+    ws.merge_cells("B2:G2")
+    title_cell: Cell = ws["B2"]
     title_cell.value = "Study Plan"
     title_cell.font = _TITLE_FONT
     title_cell.alignment = _CENTER_ALIGNMENT
