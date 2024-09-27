@@ -1,11 +1,14 @@
 from urllib import request
 from urllib.error import HTTPError, URLError
+from re import Pattern, compile
 
 from bs4 import BeautifulSoup, ResultSet, Tag
 
 
+COURSE_CODE_PATTERN: Pattern = compile(r"\b[A-Z]{4}\s*\d{4}[A-Z]?\b")
+
 def retrieve(url: str) -> str:
-    resp = request.urlopen(request.Request(url, method="HEAD"), timeout=5)
+    resp = request.urlopen(request.Request(url, method="GET"), timeout=5)
     if resp.status != 200:
         raise HTTPError(url, resp.status, "Non-200 response received from request, could not retrieve prerequisites.")
     return resp.read()
@@ -21,18 +24,26 @@ def parse_prereq_block(block_content: str) -> list[list[str]]:
     Returns:
         list[list[str]]: prerequisite list. See get_prerequisites documentation for structure
     """
-    pass
+    results: list[list[str]] = []
+    prereq_groups: list[str] = block_content.split(" AND ")
+
+    for group in prereq_groups:
+        course_codes: list[str] = COURSE_CODE_PATTERN.findall(group)
+        results.append(course_codes)
+    return results
+    
 
 
 def extract_information(soup: BeautifulSoup) -> dict[str, list[list[str]]]:
     """
     Locate any instances of courseblock in the soup and construct a map of course codes to prerequisite course codes
     """
+    results: dict[str, list[list[str]]] = {}
 
     course_blocks: ResultSet[Tag] = soup.find_all(name="div", class_="courseblock")
     for course_block in course_blocks:
         course_code: str = course_block.find("span", class_="detail-code").find("strong").get_text()
-        course_title: str = course_block.find("span", class_="detail-title").find("strong").get_text()
+        #course_title: str = course_block.find("span", class_="detail-title").find("strong").get_text()
         prereqs: list[list[str]] = []
 
         course_extras: ResultSet[Tag] = course_block.find_all("div", class_="courseblockextra")
@@ -43,7 +54,9 @@ def extract_information(soup: BeautifulSoup) -> dict[str, list[list[str]]]:
             if "prerequisite" not in block_strong.get_text().lower():
                 continue
 
-            prereqs.append(parse_prereq_block(extra.get_text()))
+            prereqs.append(parse_prereq_block(extra.get_text().upper()))
+        results[course_code] = prereqs
+    return results
 
 
 def get_prerequisites(url: str) -> dict[str, list[list[str]]]:
