@@ -25,6 +25,7 @@ def parse_prereq_block(block_content: str) -> list[list[str]]:
         list[list[str]]: prerequisite list. See get_prerequisites documentation for structure
     """
     results: list[list[str]] = []
+    block_content = block_content.upper()
     prereq_groups: list[str] = block_content.split(" AND ")
 
     for group in prereq_groups:
@@ -54,7 +55,7 @@ def extract_information(soup: BeautifulSoup) -> dict[str, list[list[str]]]:
             if "prerequisite" not in block_strong.get_text().lower():
                 continue
 
-            prereqs.append(parse_prereq_block(extra.get_text().upper()))
+            prereqs.append(parse_prereq_block(extra.get_text()))
         results[course_code] = prereqs
     return results
 
