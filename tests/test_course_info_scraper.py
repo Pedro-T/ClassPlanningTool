@@ -1,24 +1,9 @@
 import unittest
-from unittest.mock import patch, MagicMock
 
-from class_planning_tool.input_data.prereq_scraper import get_prerequisites, retrieve, parse_prereq_block, extract_information
+from bs4 import BeautifulSoup
+from class_planning_tool.input_data.prereq_scraper import get_prerequisites, parse_prereq_block, extract_information
 
 class TestClassScheduleParsing(unittest.TestCase):
-
-
-    def setUp(self) -> None:
-        self.req_patcher = patch("urllib.request.urlopen")
-        self.mock_urlopen: MagicMock = self.req_patcher.start()
-        with open("tests/resources/course_descriptions_trimmed.html", "r") as f:
-            self.mock_html = f.read()
-        
-        mock_resp: MagicMock = MagicMock()
-        mock_resp.status = 200
-        mock_resp.read.return_value = self.mock_html.encode('utf-8')
-        self.mock_urlopen.return_value = mock_resp
-    
-    def tearDown(self):
-        self.req_patcher.stop()
 
     def test_preqeq_parsing_single(self):
         block: str = "CPSC 1301K with a minimum grade of C"
@@ -39,7 +24,31 @@ class TestClassScheduleParsing(unittest.TestCase):
                 ["CPSC 5555R"]
             ], results)
 
+    def test_extract_info_full(self):
+        expected = {
+            "CPSC 1111": [
+                ["CPSC 1301K", "CPSC 1301", "CPSC 1301H", "CPSC 1301I", "CPSC 1301X"]
+            ],
+            "CPSC 2222": [
+                ["CPSC 1301K"]
+            ],
+            "CPSC 3333": [],
+            "CPSC 4444": [
+                ["CPSC 1301K"],
+                ["CPSC 7777"]
+            ],
+            "CPSC 5555": []
+        }
 
-    @unittest.skip("Full end to end test with real query site, only execute this when necessary.")
+        with open("tests/resources/course_descriptions_trimmed.html", "r") as f:
+            soup: BeautifulSoup = BeautifulSoup(f.read(), "html.parser")
+        results = extract_information(soup)
+        self.assertDictEqual(expected, results)
+
+
+    @unittest.skip("Full end to end test with real query to site, only execute this when necessary.")
     def test_end_to_end(self):
+        """
+        Due to the very long list on the actual page, this is only a spot check for three randomly chosen courses.
+        """
         pass
