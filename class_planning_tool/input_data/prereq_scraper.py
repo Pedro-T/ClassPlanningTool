@@ -55,7 +55,8 @@ def extract_information(soup: BeautifulSoup) -> dict[str, list[list[str]]]:
             if "prerequisite" not in block_strong.get_text().lower():
                 continue
 
-            prereqs.append(parse_prereq_block(extra.get_text()))
+            prereqs = parse_prereq_block(extra.get_text())
+            break
         results[course_code] = prereqs
     return results
 
