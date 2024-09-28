@@ -70,13 +70,13 @@ def get_prerequisites(url: str) -> dict[str, list[list[str]]]:
     Returns:
         dict[str, list[list[str]]] map of course codes to prerequisites. Prereqs are arranged as lists of lists, where
         the top level lists are prerequisite groups. Any course in the second-level list is sufficient to fulfill a prerequisite.
-        For example, if CPSC5555 requires specifically CPSC1111 but also either of CPSC2222 or CPSC3333, the structure is:
-        "CPSC5555": [
-            ["CPSC1111"],
-            ["CPSC2222", "CPSC3333"]
+        For example, if CPSC 5555 requires specifically CPSC 1111 but also either of CPSC 2222 or CPSC 3333, the structure is:
+        "CPSC 5555": [
+            ["CPSC 1111"],
+            ["CPSC 2222", "CPSC 3333"]
         ]
         A course with no prerequisites at all will have only an empty list, e.g.
-        "CPSC5555": []
+        "CPSC 5555": []
     
     Raises:
         ValueError if no URL is provided
