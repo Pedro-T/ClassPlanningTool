@@ -49,6 +49,6 @@ class TestClassScheduleParsing(unittest.TestCase):
     @unittest.skip("Full end to end test with real query to site, only execute this when necessary.")
     def test_end_to_end(self):
         """
-        Due to the very long list on the actual page, this is only a spot check for three randomly chosen courses.
+        Due to the very long list on the actual page, this will only be a spot check for three randomly chosen courses.
         """
         pass
