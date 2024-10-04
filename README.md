@@ -17,11 +17,17 @@ Non-functional requirements:
 
 ## Purpose
 
-TBD
+This application provides a student with a viable course plan to complete their studies, taking into account the following data:
+* Current progress
+* Course prerequisites
+* Course schedule for future semesters
+* Program requirements
 
 ## Required Inputs
 
-TBD
+1. Current DegreeWorks progress exported as a PDF file
+2. URL of the appropriate course descriptions page for your program
+3. Current course schedule Excel workbook provided by the department
 
 ## Setup
 
