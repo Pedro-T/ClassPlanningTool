@@ -1,4 +1,9 @@
 import fitz
+from re import Pattern, compile
+
+COURSE_CODE: Pattern = compile(r"^[A-Z]{4} \d{4}")
+
+COMPLETED_COURSE: Pattern = compile(r"([A-Z]{4} \d{4}) ?\n.{0,100}\n[ABCDF] ?\n\d{1} ?\n(Summer|Fall|Spring) (20\d{2})")
 
 class DegreeWorksParsingError(Exception):
     """
@@ -18,6 +23,24 @@ def open_file(file_path: str) -> fitz.Document:
         return fitz.Document(file_path)
     except (TypeError, FileNotFoundError, fitz.FileDataError, fitz.EmptyFileError, ValueError) as e:
         raise DegreeWorksParsingError("Could not open or read PDF file", e)
+
+
+def process_content(text: str) -> dict[str, dict[str, str]]:
+    results: dict[str, dict[str, str]] = {}
+
+    completed_courses: list[tuple[str, str, str]] = COMPLETED_COURSE.findall(text)
+    for course in completed_courses:
+        results[course[0]] = {
+            "status": "complete",
+            "term": f"{course[1][:2].upper()}{course[2][2:]}"
+        }
+
+    # TODO incomplete courses
+
+    # TODO in progress courses
+
+    return results
+
 
 
 def parse_pdf(file_path: str) -> dict[str, dict[str, str]]:
@@ -49,4 +72,7 @@ def parse_pdf(file_path: str) -> dict[str, dict[str, str]]:
     }
     
     """
-    pass
+    doc: fitz.Document = open_file(file_path)
+    text: str = "\n".join([doc.load_page(i).get_textpage().extractText()[2:] for i in range(len(doc))]) # reason for excluding first two lines is the header
+    return process_content(text)
+    
