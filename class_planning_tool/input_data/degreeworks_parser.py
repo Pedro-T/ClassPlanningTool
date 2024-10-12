@@ -1,9 +1,11 @@
 import fitz
 from re import Pattern, compile
 
-COURSE_CODE: Pattern = compile(r"^[A-Z]{4} \d{4}")
+COMPLETED_COURSE_PATTERN: Pattern = compile(r"([A-Z]{4} \d{4}) ?\n.{0,100}\n[ABCDF] ?\n\d{1} ?\n(Summer|Fall|Spring) (20\d{2})")
 
-COMPLETED_COURSE: Pattern = compile(r"([A-Z]{4} \d{4}) ?\n.{0,100}\n[ABCDF] ?\n\d{1} ?\n(Summer|Fall|Spring) (20\d{2})")
+CURRENT_COURSE_PATTERN: Pattern = compile(r"([A-Z]{4} \d{4}) ?\n.{0,100}\nCURR ?\n\(?\d{1}\)? ?\n(Summer|Fall|Spring) (20\d{2})")
+
+INCOMPLETE_COURSE_PATTERN: Pattern = compile(r"Still needed: ?\n1 Class in ([A-Z]{4} \d{4})")
 
 class DegreeWorksParsingError(Exception):
     """
@@ -25,22 +27,39 @@ def open_file(file_path: str) -> fitz.Document:
         raise DegreeWorksParsingError("Could not open or read PDF file", e)
 
 
+def extract_text(doc: fitz.Document) -> str:
+    result: str = "\n".join([doc.load_page(i).get_textpage().extractText()[2:] for i in range(len(doc))]) # reason for excluding first two lines is the header
+    if not result:
+        raise DegreeWorksParsingError("Empty text content from PDF", ValueError("Empty result"))
+    return result
+
+
 def process_content(text: str) -> dict[str, dict[str, str]]:
     results: dict[str, dict[str, str]] = {}
 
-    completed_courses: list[tuple[str, str, str]] = COMPLETED_COURSE.findall(text)
+    completed_courses: list[tuple[str, str, str]] = COMPLETED_COURSE_PATTERN.findall(text)
     for course in completed_courses:
         results[course[0]] = {
             "status": "complete",
             "term": f"{course[1][:2].upper()}{course[2][2:]}"
         }
 
-    # TODO incomplete courses
+    incomplete_courses: list[tuple[str, str, str]] = INCOMPLETE_COURSE_PATTERN.findall(text)
+    for course in incomplete_courses:
+        results[course] = {
+            "status": "incomplete",
+            "term": ""
+        }
+    # this may pick up some current courses but they will be overridden below anyway
 
-    # TODO in progress courses
+    current_courses: list[tuple[str, str, str]] = CURRENT_COURSE_PATTERN.findall(text)
+    for course in current_courses:
+        results[course[0]] = {
+            "status": "current",
+            "term": f"{course[1][:2].upper()}{course[2][2:]}"
+        }
 
     return results
-
 
 
 def parse_pdf(file_path: str) -> dict[str, dict[str, str]]:
@@ -73,6 +92,5 @@ def parse_pdf(file_path: str) -> dict[str, dict[str, str]]:
     
     """
     doc: fitz.Document = open_file(file_path)
-    text: str = "\n".join([doc.load_page(i).get_textpage().extractText()[2:] for i in range(len(doc))]) # reason for excluding first two lines is the header
+    text: str = extract_text(doc)
     return process_content(text)
-    
