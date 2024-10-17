@@ -11,7 +11,7 @@ def retrieve(url: str) -> str:
     resp = request.urlopen(request.Request(url, method="GET"), timeout=5)
     if resp.status != 200:
         raise HTTPError(url, resp.status, "Non-200 response received from request, could not retrieve prerequisites.")
-    return resp.read()
+    return resp.read().decode("utf-8", "ignore").replace("\xa0", " ") # removes nbsp characters replace with regular spaces
 
 
 def parse_prereq_block(block_content: str) -> list[list[str]]:
