@@ -1,0 +1,98 @@
+{
+    "CPSC1105": {
+      "title": "Introduction to Computing Principles and Technology",
+      "description": "This course provides an introduction to current and emerging computing principles and technologies used in various professional environments. It discusses the nature of information vs data, computer hardware, software, databases, programming, web, communications, and other information systems-based technology. In addition, the need for information privacy and security related to these technologies is discussed.",
+      "prerequisites": []
+    },
+    "CPSC1301K": {
+      "title": "Computer Science I",
+      "description": "This course includes an overview of computers and programming; problem solving and algorithm development; simple data types; arithmetic and logic operators; selection structures; repetition structures; text files; arrays; procedural abstraction and software design; modular programming. It includes a lab component with hands-on projects to apply and reinforce the topics covered.",
+      "prerequisites": []
+    },
+    "CPSC1302K": {
+      "title": "Computer Science II",
+      "description": "A continuation of CPSC 1301K, emphasizing programming using object-oriented methods. Topics include designing, developing, and using classes, encapsulation, inheritance, polymorphism, and dynamic binding.",
+      "prerequisites": ["CPSC1301K", "MATH1113"]
+    },
+    "CPSC1555": {
+      "title": "Selected Topics in Computer Science",
+      "description": "Study of introductory topics of special interest, independent study, or directed experience in the field of computing. Course may be taken three times, with a maximum of three credit hours applied to the degree program.",
+      "prerequisites": []
+    },
+    "CPSC2105": {
+      "title": "Computer Organization",
+      "description": "Overview of basic computer organization, including data representation, Boolean Algebra, logic gates, flip-flops, sequential logic, computer arithmetic, and instruction set architecture. It also covers the machine and computer languages, and the compilation, assembly, and loading process.",
+      "prerequisites": ["CPSC1301K", "MATH2125"]
+    },
+    "CPSC2108": {
+      "title": "Data Structures",
+      "description": "This course extends concepts of primitive data types by teaching students a set of data structures that are foundational to theoretical and practical domains of computer science.",
+      "prerequisites": ["CPSC1302K", "MATH2125"]
+    },
+    "CPSC2115": {
+      "title": "Information Technology Fundamentals",
+      "description": "Provides foundational knowledge of IT, including hardware, software, skills to set up and securely use computers, perform support for PCs, and maintain networks. Prepares students for the CompTIA IT Fundamentals+ certification exam.",
+      "prerequisites": []
+    },
+    "CPSC2125": {
+      "title": "Internet Programming",
+      "description": "An introduction to internet programming and front-end web development. Topics include responsive web page development, client-side scripting, version control, and multimedia for web pages.",
+      "prerequisites": ["CPSC1301K"]
+    },
+    "CPSC2555": {
+      "title": "Selected Topics in Computer Science",
+      "description": "Study of topics of special interest, independent study, or directed experience in the field of computing. Repeatable for credit up to 2 times or 6 hours.",
+      "prerequisites": ["CPSC1301K"]
+    },
+    "CPSC3105": {
+      "title": "Digital Multimedia Development",
+      "description": "Covers digital design principles and techniques for creating multimedia. Students learn to analyze multimedia needs, develop designs, and implement working applications or websites.",
+      "prerequisites": ["CPSC2125"]
+    },
+    "CPSC3111": {
+      "title": "COBOL Programming",
+      "description": "Introduction to programming in COBOL, with an emphasis on structured design techniques. Computer assignments required.",
+      "prerequisites": ["CPSC1302K"]
+    },
+    "CPSC3116": {
+      "title": "z/OS and JCL",
+      "description": "Provides an overview of IBM mainframe operating systems, including JCL, REXX scripting, and related tools.",
+      "prerequisites": ["CPSC1302K"]
+    },
+    "CPSC3118": {
+      "title": "Graphical User Interface Development",
+      "description": "Focuses on designing and programming event-driven Windows applications using Visual Basic.NET, with extensive lab work.",
+      "prerequisites": ["CPSC1302K"]
+    },
+    "CPSC3121": {
+      "title": "Assembly Language Programming I",
+      "description": "Covers machine architecture, data processing, arithmetic operations, subroutines, and program linkage using assembly language.",
+      "prerequisites": ["CPSC2105", "CPSC1302K"]
+    },
+    "CPSC3125": {
+      "title": "Operating Systems",
+      "description": "Introduces operating system concepts, including processes, threads, synchronization, and memory management.",
+      "prerequisites": ["CPSC2105", "CPSC2108"]
+    },
+    "CPSC3131": {
+      "title": "Database Systems I",
+      "description": "Covers fundamentals of database systems, including SQL, database design, and normalization. Includes lab work and programming projects.",
+      "prerequisites": ["CPSC1302K"]
+    },
+    "CPSC3137": {
+      "title": "Natural Language Processing and Text Mining",
+      "description": "Focuses on programming techniques for mining and analyzing text to extract meaningful information and discover patterns.",
+      "prerequisites": ["CPSC1301K"]
+    },
+    "CPSC3156": {
+      "title": "Transaction Processing",
+      "description": "Introduces transaction-based computer systems, multitasking, multithreading, CICS, and SOA concepts.",
+      "prerequisites": ["CPSC3111"]
+    },
+    "CPSC3165": {
+      "title": "Professionalism in Computing",
+      "description": "Explores the social impact and ethical responsibilities of computer professionals. Topics include history of computing and legal considerations.",
+      "prerequisites": []
+    }
+  }
+  
