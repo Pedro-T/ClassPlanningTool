@@ -174,8 +174,3 @@ class Dashboard:
             self.status_box.tag_add(color, start_idx, end_idx)
             start_idx = end_idx
         self.status_box.tag_configure(color, foreground=color)
-
-if __name__ == "__main__":
-    root = ttk.Window(themename="superhero")
-    dashboard = Dashboard(root)
-    root.mainloop()

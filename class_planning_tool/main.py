@@ -1,4 +1,7 @@
-
+import ttkbootstrap as ttk
+from ui.dashboard import Dashboard
 
 if __name__ == "__main__":
-    print("Nothing to see here.")
+    root = ttk.Window(themename="superhero")
+    dashboard = Dashboard(root)
+    root.mainloop()
