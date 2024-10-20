@@ -62,6 +62,9 @@ class Dashboard:
 
     def upload_degree_file(self, button):
         file_path = filedialog.askopenfilename(title="Select Degree Requirements File")
+        if not file_path:
+            return
+        
         if file_path and check_file_type(file_path, [".pdf"]):
             self.degree_file_path = file_path
             button.config(text="File Uploaded", bootstyle=SUCCESS)
