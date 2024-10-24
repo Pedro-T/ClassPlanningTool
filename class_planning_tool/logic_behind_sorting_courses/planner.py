@@ -112,7 +112,7 @@ class Planner:
 
             for course in sorted_courses:
                 if course in available_courses and len(semester_courses) < max_courses_per_semester:
-                    semester_courses.append({"course": course})
+                    semester_courses.append({"code": course})
                     remaining_courses.remove(course)
 
             if semester_courses:
@@ -139,5 +139,5 @@ class Planner:
     def print_schedule(self, schedule: dict[str, list[dict[str, str]]]):
         """Prints the schedule in a user-friendly format."""
         for semester, courses in schedule.items():
-            course_names = [course["course"] for course in courses]
+            course_names = [course["code"] for course in courses]
             logger.info(f"{semester}: {', '.join(course_names)}")
