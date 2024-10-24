@@ -109,7 +109,7 @@ def write_plan_workbook(course_plan: OrderedDict[str, list[dict[str, str]]], boo
     """
 
     if len(course_plan.keys()) % 3 != 0:
-        raise ValueError(f"Course plans must be in academic year sequences of three semesters. The expected length is a multiple of three. Provided length: {len(course_plan.keys())}")
+        raise ValueError(f"Course plans must be in academic year sequences of three semesters. The expected length is a multiple of three. Provided length: {len(course_plan.keys())}\n{course_plan}")
     wb: Workbook = Workbook()
     ws: Worksheet = wb.active
     ws.title = "Course Plan"
