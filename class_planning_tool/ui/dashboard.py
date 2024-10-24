@@ -161,38 +161,14 @@ class Dashboard:
             result_text = ttk.Text(self.root, height=30, width=100)
             result_text.pack(pady=20)
 
+            self.course_plan = self.controller.get_plan(degree_data, schedule_data, prereq_data)
+
             result_text.tag_configure("green_title", foreground="green", font=("Helvetica", 12, "bold"))
 
-            #Display the parsed DegreeWorks result
-            degree_file_name = os.path.basename(self.degree_file_path) 
-            result_text.insert('end', f"Parsed result from your {degree_file_name}:\n", "green_title")
-
-            for course, details in degree_data.items():
-                result_text.insert(
-                    'end', 
-                    f"Course: {course}, Status: {details['status']}, Term: {details['term']}\n"
-                )
-
-            schedule_file_name = os.path.basename(self.schedule_file_path)
-            result_text.insert('end', f"\n\nResult from your {schedule_file_name}:\n", "green_title")
-
-            for course, terms in schedule_data.items():
-                result_text.insert(
-                    'end', 
-                    f"Course: {course}, Available in: {', '.join(terms)}\n"
-                )
-
-            result_text.insert('end', f"\n\nPrerequisites from scraping:\n\n", "green_title")
-            for course, prereqs in prereq_data.items():
-                if prereqs:
-                    prereq_text = " AND ".join([" OR ".join(group) for group in prereqs])
-                    result_text.insert('end', f"Course: {course}, Prerequisites: {prereq_text}\n")
-                else:
-                    result_text.insert('end', f"Course: {course}, Prerequisites: None\n")
 
             result_text.insert('end', "\n\nYour final result:\n\n")
-
-            self.course_plan = self.generate_course_plan_data(degree_data, schedule_data)
+            # TODO show result in some form
+            
 
             result_text.config(state='disabled')
 
@@ -201,53 +177,14 @@ class Dashboard:
         else:
             messagebox.showerror("Processing Error", f"An error occurred: {degree_data}", parent=self.root)  
 
-    def generate_course_plan_data(self, degree_data, schedule_data):
-      
-        course_plan = OrderedDict()
-
-        semester_order = ['SP', 'SU', 'FA']
-
-        course_schedule = {}
-
-        print("Schedule Data:", schedule_data) 
-        print("Degree Data:", degree_data) 
-
-        for course_code, terms in schedule_data.items():
-            for term in terms:
-                if len(term) < 4: 
-                    print("Invalid term format")
-                    continue
-
-                semester = term[:2]
-                year = term[2:] 
-
-                if year not in course_schedule:
-                    course_schedule[year] = {'SP': [], 'SU': [], 'FA': []}
-
-                course_title = degree_data.get(course_code, {}).get('title', course_code) 
-                course_schedule[year][semester].append({
-                    "code": course_code,
-                    "title": course_title
-                })
-        for year in sorted(course_schedule.keys()):
-            for semester in semester_order:
-                term = f"{semester}{year}"
-                course_plan[term] = course_schedule[year][semester] if semester in course_schedule[year] else []
-
-        print("Final Course Plan Data:", course_plan) 
-        return course_plan
-
     def download_result(self):
        
-
-        output_file = self.controller.generate_course_plan(self.course_plan)
-
-        
-        if Path(output_file).exists():
-            messagebox.showinfo("Download", f"Your result Excel file has been downloaded: {output_file}", parent=self.root)
-            os.startfile(output_file)
-        else:
-            messagebox.showerror("Download Error", "Failed to download the Excel file.", parent=self.root)
+        try:
+            self.controller.generate_course_plan(self.course_plan)
+            messagebox.showinfo("Download", f"Your result Excel file has been created: Course_Plan.xlsx", parent=self.root)
+            os.startfile("Course_Plan.xlsx")
+        except Exception as e:
+            messagebox.showerror("Download Error", "Failed to write the Excel file.", parent=self.root)
 
     def update_status(self):
         status_text = """
