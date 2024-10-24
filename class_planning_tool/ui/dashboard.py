@@ -166,7 +166,14 @@ class Dashboard:
 
 
             result_text.insert('end', "\n\nYour final result:\n\n")
-            # TODO show result in some form
+
+            for semester, courses in self.course_plan.items():
+                result_text.insert("end", f"{semester}\n")
+                if courses:
+                    result_text.insert("end", "\n".join([f"{course['code']} | {course['title']}" for course in courses]))
+                else:
+                    result_text.insert("end", "No courses this semester.")
+                result_text.insert("end", "\n\n")
             
 
             result_text.config(state='disabled')
