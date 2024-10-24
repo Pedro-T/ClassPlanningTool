@@ -144,7 +144,7 @@ class Dashboard:
         schedule_data = self.controller.process_schedule_file(self.schedule_file_path)
 
         url = self.url_entry.get()
-        prereq_data = self.controller.process_prerequisites(url)
+        prereq_data, title_map = self.controller.process_prerequisites(url)
 
         loading_window.destroy()
         
@@ -160,7 +160,7 @@ class Dashboard:
             result_text = ttk.Text(self.root, height=30, width=100)
             result_text.pack(pady=20)
 
-            self.course_plan = self.controller.get_plan(degree_data, schedule_data, prereq_data)
+            self.course_plan = self.controller.get_plan(degree_data, schedule_data, prereq_data, title_map)
 
             result_text.tag_configure("green_title", foreground="green", font=("Helvetica", 12, "bold"))
 
