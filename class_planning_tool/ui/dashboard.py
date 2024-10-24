@@ -139,7 +139,6 @@ class Dashboard:
             threading.Thread(target=self.process_files, args=(loading_window,), daemon=True).start()
             
     def process_files(self, loading_window):
-        #todo add logic of processing data
         degree_data = self.controller.process_degreeworks_file(self.degree_file_path)
 
         schedule_data = self.controller.process_schedule_file(self.schedule_file_path)
@@ -178,6 +177,7 @@ class Dashboard:
             messagebox.showerror("Processing Error", f"An error occurred: {degree_data}", parent=self.root)  
 
     def download_result(self):
+        
        
         try:
             self.controller.generate_course_plan(self.course_plan)
