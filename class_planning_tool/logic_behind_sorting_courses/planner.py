@@ -1,5 +1,5 @@
 import logging
-from collections import defaultdict, deque
+from collections import defaultdict, deque, OrderedDict
 
 # Configure the logger
 logging.basicConfig(
@@ -11,14 +11,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class Planner:
-    def __init__(self, get_prerequisites, get_course_progress, get_offerings):
+    def __init__(self, course_progress, course_schedule, prerequisites):
         
         """Initializes the scheduler with prerequisites of the degree being pursued,
         course progress information obtained from degreeworks,
         and the semesters that each course is offered (offerings)."""
-        self.prerequisites = get_prerequisites
-        self.course_progress = get_course_progress
-        self.offerings = get_offerings
+        self.prerequisites = prerequisites
+        self.course_progress = course_progress
+        self.offerings = course_schedule
 
         # Identify required courses based on progress (ignore completed courses)
         self.required_courses = self.get_remaining_courses()
@@ -102,7 +102,7 @@ class Planner:
         ]
 
         # Initialize the schedule as a dictionary with semesters as keys
-        schedule = {}
+        schedule = OrderedDict()
         remaining_courses = set(self.required_courses)
         sorted_courses = self.topological_sort()
 
