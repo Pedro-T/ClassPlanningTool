@@ -94,7 +94,7 @@ class Planner:
         logger.info(f"Available courses in {semester}: {available}")
         return available
 
-    def find_best_schedule(self, max_courses_per_semester=8) -> dict[str, list[dict[str, str]]]:
+    def find_best_schedule(self, max_courses_per_semester=4) -> dict[str, list[dict[str, str]]]:
         """Attempts to create the best schedule to complete all required courses."""
         semesters = [
             "FA24", "SP25", "SU25", "FA25", "SP26", "SU26",
