@@ -128,7 +128,6 @@ class Planner:
             if length == 1:
                 schedule[f"SU{last_year}"] = []
             schedule[f"FA{last_year}"] = []
-        print(length)
 
 
         if remaining_courses:
