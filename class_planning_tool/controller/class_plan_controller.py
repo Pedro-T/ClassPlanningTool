@@ -9,7 +9,7 @@ from input_data.prereq_scraper import Scraper
 
 from output_generation.class_plan_writer import write_plan_workbook
 
-from logic_behind_sorting_courses.planner import Planner
+from course_planner.planner import Planner
 
 class ClassPlanController:
     def __init__(self):
