@@ -49,6 +49,7 @@ class ClassPlanController:
     
     def get_plan(self, degree_data, schedule_data, prereq_data):
         """Wrapper for retrieving course plan based on inputs"""
+        return Planner(degree_data, schedule_data, prereq_data).find_best_schedule()
         try:
             return Planner(degree_data, schedule_data, prereq_data).find_best_schedule()
         except Exception as e:
@@ -58,9 +59,4 @@ class ClassPlanController:
         """
         Wrapper for call to Excel writer
         """
-
-        try:
-            # Use the write_plan_workbook to generate the file
-            write_plan_workbook(course_plan)
-        except Exception as e:
-            print(f"Failed to generate Excel file: {e}")
+        write_plan_workbook(course_plan)
