@@ -6,6 +6,8 @@ import time
 from controller.class_plan_controller import ClassPlanController
 from error_handling.type_checker import check_file_type
 import os
+from collections import OrderedDict
+from pathlib import Path
 
 class Dashboard:
     def __init__(self, root):
@@ -33,6 +35,7 @@ class Dashboard:
         self.degree_file_path = None
         self.study_plan_file_path = None
         self.schedule_file_path = None
+        self.course_plan = {} 
 
         self.update_status()
 
@@ -42,7 +45,7 @@ class Dashboard:
 
     def setup_file_upload_buttons(self, parent):
         self.create_file_upload_row(parent, "Degree Requirements File:", self.upload_degree_file, 0)
-        self.create_file_upload_row(parent, "Graduate Study Plan File:", self.upload_study_plan_file, 1)
+        # self.create_file_upload_row(parent, "Graduate Study Plan File:", self.upload_study_plan_file, 1)
         self.create_file_upload_row(parent, "4-Year Schedule File:", self.upload_schedule_file, 2)
         ttk.Label(parent, text="URL:", bootstyle="info").grid(row=3, column=0, sticky='w', padx=10, pady=10)
         self.url_entry = ttk.Entry(parent, width=40)
@@ -83,22 +86,24 @@ class Dashboard:
             button.config(text="Upload", bootstyle=PRIMARY)
             button.filename_label.config(text="")
         self.update_status()
+    
+    #Nolonger needed
         
-    def upload_study_plan_file(self, button):
-        file_path = filedialog.askopenfilename(title="Select Graduate Study Plan File")
-        if not file_path:
-            return
-        if file_path and check_file_type(file_path, [".xlsx", ".xls"]):
-            self.study_plan_file_path = file_path
-            button.config(text="File Uploaded", bootstyle=SUCCESS)
-            button.filename_label.config(text=file_path.split('/')[-1])
-            messagebox.showinfo("File Selected", "Graduate Study Plan File uploaded successfully!",  parent=self.root)
-        else:
-            messagebox.showerror("Invalid File", "Please select a valid Excel file.",  parent=self.root)
-            self.study_plan_file_path = None
-            button.config(text="Upload", bootstyle=PRIMARY)
-            button.filename_label.config(text="")
-        self.update_status()
+    # def upload_study_plan_file(self, button):
+    #     file_path = filedialog.askopenfilename(title="Select Graduate Study Plan File")
+    #     if not file_path:
+    #         return
+    #     if file_path and check_file_type(file_path, [".xlsx", ".xls"]):
+    #         self.study_plan_file_path = file_path
+    #         button.config(text="File Uploaded", bootstyle=SUCCESS)
+    #         button.filename_label.config(text=file_path.split('/')[-1])
+    #         messagebox.showinfo("File Selected", "Graduate Study Plan File uploaded successfully!",  parent=self.root)
+    #     else:
+    #         messagebox.showerror("Invalid File", "Please select a valid Excel file.",  parent=self.root)
+    #         self.study_plan_file_path = None
+    #         button.config(text="Upload", bootstyle=PRIMARY)
+    #         button.filename_label.config(text="")
+    #     self.update_status()
         
     def upload_schedule_file(self, button):
         file_path = filedialog.askopenfilename(title="Select 4-Year Schedule File")
@@ -117,7 +122,7 @@ class Dashboard:
         self.update_status()
         
     def submit_files(self):
-        if not (self.degree_file_path and self.study_plan_file_path and self.schedule_file_path and self.url_entry.get()):
+        if not (self.degree_file_path and self.schedule_file_path and self.url_entry.get()):
             messagebox.showwarning("Missing Files", "Please upload all required files.",  parent=self.root)
         else:
             loading_window = Toplevel(self.root)
@@ -185,7 +190,9 @@ class Dashboard:
                 else:
                     result_text.insert('end', f"Course: {course}, Prerequisites: None\n")
 
-            result_text.insert('end', "\n\nParsed result from your Graduate_Plan.xlsx:\n\n")
+            result_text.insert('end', "\n\nYour final result:\n\n")
+
+            self.course_plan = self.generate_course_plan_data(degree_data, schedule_data)
 
             result_text.config(state='disabled')
 
@@ -193,18 +200,61 @@ class Dashboard:
             download_button.pack(pady=10)
         else:
             messagebox.showerror("Processing Error", f"An error occurred: {degree_data}", parent=self.root)  
+
+    def generate_course_plan_data(self, degree_data, schedule_data):
+      
+        course_plan = OrderedDict()
+
+        semester_order = ['SP', 'SU', 'FA']
+
+        course_schedule = {}
+
+        print("Schedule Data:", schedule_data) 
+        print("Degree Data:", degree_data) 
+
+        for course_code, terms in schedule_data.items():
+            for term in terms:
+                if len(term) < 4: 
+                    print("Invalid term format")
+                    continue
+
+                semester = term[:2]
+                year = term[2:] 
+
+                if year not in course_schedule:
+                    course_schedule[year] = {'SP': [], 'SU': [], 'FA': []}
+
+                course_title = degree_data.get(course_code, {}).get('title', course_code) 
+                course_schedule[year][semester].append({
+                    "code": course_code,
+                    "title": course_title
+                })
+        for year in sorted(course_schedule.keys()):
+            for semester in semester_order:
+                term = f"{semester}{year}"
+                course_plan[term] = course_schedule[year][semester] if semester in course_schedule[year] else []
+
+        print("Final Course Plan Data:", course_plan) 
+        return course_plan
+
     def download_result(self):
-        messagebox.showinfo("Download", "Your result Excel file has been downloaded successfully!", parent=self.root)
+       
+
+        output_file = self.controller.generate_course_plan(self.course_plan)
+
+        
+        if Path(output_file).exists():
+            messagebox.showinfo("Download", f"Your result Excel file has been downloaded: {output_file}", parent=self.root)
+            os.startfile(output_file)
+        else:
+            messagebox.showerror("Download Error", "Failed to download the Excel file.", parent=self.root)
 
     def update_status(self):
         status_text = """
             Degree Requirements File: {} {}
-            Graduate Study Plan File: {} {}
             4-Year Schedule File: {} {}""".format(
             "Uploaded" if self.degree_file_path else " Not Uploaded",
             "\u2705" if self.degree_file_path else "\u274C",
-            "Uploaded" if self.study_plan_file_path else " Not Uploaded",
-            "\u2705" if self.study_plan_file_path else "\u274C",
             "Uploaded" if self.schedule_file_path else " Not Uploaded",
             "\u2705" if self.schedule_file_path else "\u274C"
             )

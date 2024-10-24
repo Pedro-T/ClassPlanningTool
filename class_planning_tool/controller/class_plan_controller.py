@@ -1,11 +1,13 @@
 
-
+from collections import OrderedDict
 
 from input_data.degreeworks_parser import parse_pdf
 
 from input_data.excel_inputs import get_class_schedule_data
 
 from input_data.prereq_scraper import get_prerequisites
+
+from output_generation.class_plan_writer import write_plan_workbook
 
 class ClassPlanController:
     def __init__(self):
@@ -53,3 +55,44 @@ class ClassPlanController:
             return prereq_data
         except Exception as e:
             return str(e) 
+        
+    # def generate_course_plan(self, course_plan):
+    #     """
+    #     Generate the course plan Excel file from the course plan data.
+    #     """
+    #     output_file = 'course_plan.xlsx'
+        
+    #     data = []
+    #     for term, courses in course_plan.items():
+    #         for course in courses:
+    #             data.append({
+    #                 "Term": term,
+    #                 "Course Code": course['code'],
+    #                 "Course Title": course['title']
+    #             })
+
+    #     df = pd.DataFrame(data)
+    #     try:
+    #         df.to_excel(output_file, index=False)
+    #         return output_file
+    #     except Exception as e:
+    #         print(f"Failed to generate Excel file: {e}")
+    #         return None
+
+    
+    def generate_course_plan(self, course_plan):
+        """
+        Generate the course plan Excel file using write_plan_workbook.
+        """
+        output_file = 'course_plan.xlsx'
+        
+        # Convert the course_plan to an OrderedDict to ensure it's compatible with write_plan_workbook
+        ordered_course_plan = OrderedDict(course_plan)
+
+        try:
+            # Use the write_plan_workbook to generate the file
+            write_plan_workbook(ordered_course_plan, output_file)
+            return output_file
+        except Exception as e:
+            print(f"Failed to generate Excel file: {e}")
+            return None
