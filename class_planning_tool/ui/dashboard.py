@@ -181,10 +181,10 @@ class Dashboard:
        
         try:
             self.controller.generate_course_plan(self.course_plan)
-            messagebox.showinfo("Download", f"Your result Excel file has been created: Course_Plan.xlsx", parent=self.root)
+            messagebox.showinfo("Success", f"Your result Excel file has been created: Course_Plan.xlsx", parent=self.root)
             os.startfile("Course_Plan.xlsx")
         except Exception as e:
-            messagebox.showerror("Download Error", "Failed to write the Excel file.", parent=self.root)
+            messagebox.showerror("Error", f"Failed to write the Excel file. {e}", parent=self.root)
 
     def update_status(self):
         status_text = """
