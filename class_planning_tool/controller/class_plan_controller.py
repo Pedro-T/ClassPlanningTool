@@ -5,7 +5,7 @@ from input_data.degreeworks_parser import parse_pdf
 
 from input_data.excel_inputs import get_class_schedule_data
 
-from input_data.prereq_scraper import get_prerequisites
+from input_data.prereq_scraper import Scraper
 
 from output_generation.class_plan_writer import write_plan_workbook
 
@@ -40,20 +40,12 @@ class ClassPlanController:
         """
         Wrapper for prerequisite input handler call
         """
-        try:
-            
-            prereq_data = get_prerequisites(url)
-            return prereq_data
-        except Exception as e:
-            return str(e) 
+        scraper: Scraper = Scraper(url)
+        return scraper.get_prerequisites(), scraper.title_map
     
-    def get_plan(self, degree_data, schedule_data, prereq_data):
+    def get_plan(self, degree_data, schedule_data, prereq_data, title_map):
         """Wrapper for retrieving course plan based on inputs"""
-        return Planner(degree_data, schedule_data, prereq_data).find_best_schedule()
-        try:
-            return Planner(degree_data, schedule_data, prereq_data).find_best_schedule()
-        except Exception as e:
-            return str(e)
+        return Planner(degree_data, schedule_data, prereq_data, title_map).find_best_schedule()
     
     def generate_course_plan(self, course_plan):
         """
