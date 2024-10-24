@@ -93,14 +93,15 @@ class Planner:
         logger.info(f"Available courses in {semester}: {available}")
         return available
 
-    def find_best_schedule(self, max_courses_per_semester=8):
+    def find_best_schedule(self, max_courses_per_semester=8) -> dict[str, list[dict[str, str]]]:
         """Attempts to create the best schedule to complete all required courses."""
         semesters = [
             "FA24", "SP25", "SU25", "FA25", "SP26", "SU26",
-            "FA26", "SP27", "SU27", "FA27"
+            "FA26", "SP27", "SU27", "FA27", "SP28", "SU28", "FA28", "SP29", "SU29", "FA29"
         ]
 
-        schedule = []
+        # Initialize the schedule as a dictionary with semesters as keys
+        schedule = {}
         remaining_courses = set(self.required_courses)
         sorted_courses = self.topological_sort()
 
@@ -110,21 +111,23 @@ class Planner:
 
             for course in sorted_courses:
                 if course in available_courses and len(semester_courses) < max_courses_per_semester:
-                    semester_courses.append(course)
+                    # Store course details as a dictionary with string keys and values
+                    semester_courses.append({"course": course})
                     remaining_courses.remove(course)
 
             if semester_courses:
-                schedule.append((semester, semester_courses))
+                schedule[semester] = semester_courses
             if not remaining_courses:
                 break
 
         if remaining_courses:
             logger.warning(f"Unable to complete all required courses. Remaining: {remaining_courses}")
-        
+
         self.print_schedule(schedule)
         return schedule
 
-    def print_schedule(self, schedule):
+    def print_schedule(self, schedule: dict[str, list[dict[str, str]]]):
         """Prints the schedule in a user-friendly format."""
-        for semester, courses in schedule:
-            logger.info(f"{semester}: {', '.join(courses)}")
+        for semester, courses in schedule.items():
+            course_names = [course["course"] for course in courses]
+            logger.info(f"{semester}: {', '.join(course_names)}")
