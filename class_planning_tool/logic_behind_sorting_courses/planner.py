@@ -11,13 +11,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class Planner:
-    def __init__(self):
+    def __init__(self, get_prerequisites, get_course_progress, get_offerings):
         
-        #Initializes the scheduler with prerequisites, course progress, and offerings.
-        #Fetch data via function calls
-        self.prerequisites = None
-        self.course_progress = None
-        self.offerings = None
+        """Initializes the scheduler with prerequisites of the degree being pursued,
+        course progress information obtained from degreeworks,
+        and the semesters that each course is offered (offerings)."""
+        self.prerequisites = get_prerequisites
+        self.course_progress = get_course_progress
+        self.offerings = get_offerings
 
         # Identify required courses based on progress (ignore completed courses)
         self.required_courses = self.get_remaining_courses()
