@@ -112,7 +112,6 @@ class Planner:
 
             for course in sorted_courses:
                 if course in available_courses and len(semester_courses) < max_courses_per_semester:
-                    # Store course details as a dictionary with string keys and values
                     semester_courses.append({"course": course})
                     remaining_courses.remove(course)
 
@@ -120,6 +119,16 @@ class Planner:
                 schedule[semester] = semester_courses
             if not remaining_courses:
                 break
+                
+        # quick fix to accomodate course writer's expectation of three semester academic year blocks
+        length: int = len(list(schedule.keys())) % 3
+        if length:
+            last_year: str = list(schedule.keys())[-1][2:]
+            if length == 1:
+                schedule[f"SU{last_year}"] = []
+            schedule[f"FA{last_year}"] = []
+        print(length)
+
 
         if remaining_courses:
             logger.warning(f"Unable to complete all required courses. Remaining: {remaining_courses}")
