@@ -11,7 +11,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class Planner:
-    def __init__(self, course_progress, course_schedule, prerequisites):
+    def __init__(self, course_progress, course_schedule, prerequisites, titles: dict[str, str]):
         
         """Initializes the scheduler with prerequisites of the degree being pursued,
         course progress information obtained from degreeworks,
@@ -19,6 +19,7 @@ class Planner:
         self.prerequisites = prerequisites
         self.course_progress = course_progress
         self.offerings = course_schedule
+        self.titles: dict[str, str] = titles
 
         # Identify required courses based on progress (ignore completed courses)
         self.required_courses = self.get_remaining_courses()
@@ -112,7 +113,7 @@ class Planner:
 
             for course in sorted_courses:
                 if course in available_courses and len(semester_courses) < max_courses_per_semester:
-                    semester_courses.append({"code": course})
+                    semester_courses.append({"code": course, "title": self.titles[course]})
                     remaining_courses.remove(course)
 
             if semester_courses:
