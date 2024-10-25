@@ -11,7 +11,7 @@ from collections import OrderedDict
 _TITLE_FONT: Font = Font(name="Helvetica", size=24)
 _VALUE_FONT: Font = Font(name="Helvetica", size=11)
 _VALUE_FONT_BOLD: Font = Font(name="Helvetica", bold=True, size=11)
-_CENTER_ALIGNMENT: Alignment = Alignment(horizontal="center", vertical="center")
+_CENTER_ALIGNMENT: Alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
 _SEMESTER_CAPACITY: int = 4
 
 _COLUMN_WIDTHS: dict[str, int] = {
@@ -46,6 +46,7 @@ def format_sheet(ws: Worksheet) -> None:
     """
     for column_letter, width in _COLUMN_WIDTHS.items():
         ws.column_dimensions[column_letter].width = width
+    ws.row_dimensions[2].height = 30
 
 def write_semester_block(ws: Worksheet, row_start: int, column_start: int, semester: str, courses: list[dict[str, str]]) -> None:
     """
