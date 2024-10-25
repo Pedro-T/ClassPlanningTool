@@ -12,7 +12,7 @@ class TestDegreeWorksInput(unittest.TestCase):
         # this is functionally the same as calling process_content(extract_text(open_file(file_path)))
         
         with open(self.resource_path / "test_pdf_content1.txt", "r") as f:
-            self.results = degreeworks_parser.process_content(f.read())
+            self.results, self.free_classes = degreeworks_parser.process_content(f.read())
 
     def test_num_results(self):
         self.assertEqual(11, len(self.results))
