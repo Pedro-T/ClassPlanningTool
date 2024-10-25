@@ -43,9 +43,9 @@ class ClassPlanController:
         scraper: Scraper = Scraper(url)
         return scraper.get_prerequisites(), scraper.title_map
     
-    def get_plan(self, degree_data, schedule_data, prereq_data, title_map):
+    def get_plan(self, degree_data, free_electives, schedule_data, prereq_data, title_map):
         """Wrapper for retrieving course plan based on inputs"""
-        return Planner(degree_data, schedule_data, prereq_data, title_map).find_best_schedule()
+        return Planner(degree_data, free_electives, schedule_data, prereq_data, title_map).find_best_schedule()
     
     def generate_course_plan(self, course_plan):
         """

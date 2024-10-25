@@ -11,7 +11,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class Planner:
-    def __init__(self, course_progress, course_schedule, prerequisites, titles: dict[str, str]):
+    def __init__(self, course_progress, free_electives, course_schedule, prerequisites, titles: dict[str, str]):
         
         """Initializes the scheduler with prerequisites of the degree being pursued,
         course progress information obtained from degreeworks,

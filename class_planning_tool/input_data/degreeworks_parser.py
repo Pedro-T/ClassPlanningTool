@@ -7,6 +7,8 @@ CURRENT_COURSE_PATTERN: Pattern = compile(r"([A-Z]{4} \d{4}) ?\n.{0,100}\nCURR ?
 
 INCOMPLETE_COURSE_PATTERN: Pattern = compile(r"Still needed: ?\n1 Class in ([A-Z]{4} \d{4})")
 
+ELECTIVE_PATTERN: Pattern = compile(r"Program Electives ?\nStill needed: ?\n([\d]) Credits")
+
 class DegreeWorksParsingError(Exception):
     """
     Wrapper class for exceptions triggered during DegreeWorks PDF parsing. Provides a general message and access to the underlying exception.
@@ -34,7 +36,7 @@ def extract_text(doc: fitz.Document) -> str:
     return result
 
 
-def process_content(text: str) -> dict[str, dict[str, str]]:
+def process_content(text: str) -> tuple[dict[str, dict[str, str]], int]:
     results: dict[str, dict[str, str]] = {}
 
     completed_courses: list[tuple[str, str, str]] = COMPLETED_COURSE_PATTERN.findall(text)
@@ -58,11 +60,16 @@ def process_content(text: str) -> dict[str, dict[str, str]]:
             "status": "current",
             "term": f"{course[1][:2].upper()}{course[2][2:]}"
         }
+    
+    free_elective_count: int = 0
+    elective_clause = ELECTIVE_PATTERN.search(text)
+    if elective_clause:
+        free_elective_count = int(elective_clause.group(1)) // 3
 
-    return results
+    return results, free_elective_count
 
 
-def parse_pdf(file_path: str) -> dict[str, dict[str, str]]:
+def parse_pdf(file_path: str) -> tuple[dict[str, dict[str, str]], int]:
     """
     Open a PDF, extract course completion data, and return a dictionary representing the student's course progress.
     

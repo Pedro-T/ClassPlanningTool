@@ -139,7 +139,7 @@ class Dashboard:
             threading.Thread(target=self.process_files, args=(loading_window,), daemon=True).start()
             
     def process_files(self, loading_window):
-        degree_data = self.controller.process_degreeworks_file(self.degree_file_path)
+        degree_data, free_electives = self.controller.process_degreeworks_file(self.degree_file_path)
 
         schedule_data = self.controller.process_schedule_file(self.schedule_file_path)
 
@@ -160,7 +160,7 @@ class Dashboard:
             result_text = ttk.Text(self.root, height=30, width=100)
             result_text.pack(pady=20)
 
-            self.course_plan = self.controller.get_plan(degree_data, schedule_data, prereq_data, title_map)
+            self.course_plan = self.controller.get_plan(degree_data, free_electives, schedule_data, prereq_data, title_map)
 
             result_text.tag_configure("green_title", foreground="green", font=("Helvetica", 12, "bold"))
 
