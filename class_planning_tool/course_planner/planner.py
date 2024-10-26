@@ -20,6 +20,7 @@ class Planner:
         self.course_progress = course_progress
         self.offerings = course_schedule
         self.titles: dict[str, str] = titles
+        self.free_electives = free_electives
 
         # Identify required courses based on progress (ignore completed courses)
         self.required_courses = self.get_remaining_courses()
@@ -90,7 +91,7 @@ class Planner:
         """Returns a list of courses available in a given semester."""
         available = [
             course for course in remaining_courses
-            if semester in self.offerings.get(course, [])
+            if semester in self.offerings.get(course, []) and course != "CPSC 6000"
         ]
         logger.info(f"Available courses in {semester}: {available}")
         return available
@@ -99,13 +100,24 @@ class Planner:
         """Attempts to create the best schedule to complete all required courses."""
         semesters = [
             "FA24", "SP25", "SU25", "FA25", "SP26", "SU26",
-            "FA26", "SP27", "SU27", "FA27", "SP28", "SU28", "FA28", "SP29", "SU29", "FA29"
+            "FA26", "SP27", "SU27", "FA27", "SP28", "SU28", 
+            "FA28", "SP29", "SU29", "FA29"
         ]
 
         # Initialize the schedule as a dictionary with semesters as keys
         schedule = OrderedDict()
         remaining_courses = set(self.required_courses)
         sorted_courses = self.topological_sort()
+
+        # Filter out invalid electives
+        invalid_electives = {"6103", "6105", "6106"}
+        valid_electives = [
+            course for course in self.required_courses
+            if course.startswith("6") and course not in invalid_electives
+        ]
+
+        # Track each semester where courses are added
+        final_semester = None  # Initialize the final_semester variable
 
         for semester in semesters:
             available_courses = self.available_courses_in_semester(semester, remaining_courses)
@@ -118,17 +130,45 @@ class Planner:
 
             if semester_courses:
                 schedule[semester] = semester_courses
+                final_semester = semester  # Update final_semester to the latest one with courses
+                logger.debug(f"Updated final_semester to: {final_semester}")
+
             if not remaining_courses:
                 break
-                
-        # quick fix to accomodate course writer's expectation of three semester academic year blocks
-        length: int = len(list(schedule.keys())) % 3
+
+        # Ensure 'CPSC 6000' is placed in the final semester
+        logger.debug(f"Final semester before placing CPSC 6000: {final_semester}")
+        # Ensure 'CPSC 6000' is placed in the final semester
+        logger.debug(f"Remaining courses before placing CPSC 6000: {remaining_courses}")
+        if "CPSC 6000" in remaining_courses:
+            if final_semester not in schedule:
+                schedule[final_semester] = []
+            schedule[final_semester].append({"code": "CPSC 6000", "title": self.titles["CPSC 6000"]})
+            remaining_courses.remove("CPSC 6000")
+            logger.info(f"CPSC 6000 added to final semester: {final_semester}")
+        else:
+            logger.warning(f"CPSC 6000 not found in remaining_courses!")
+
+        # Add valid electives to fill free elective spots
+        elective_count = min(self.free_electives, len(valid_electives))
+        elective_courses = valid_electives[:elective_count]
+
+        for course in elective_courses:
+            # Add elective courses to the earliest available semester with space
+            for semester in semesters:
+                if len(schedule.get(semester, [])) < max_courses_per_semester:
+                    if semester not in schedule:
+                        schedule[semester] = []
+                    schedule[semester].append({"code": course, "title": self.titles[course]})
+                    break
+
+        # Quick fix for three-semester blocks
+        length = len(list(schedule.keys())) % 3
         if length:
-            last_year: str = list(schedule.keys())[-1][2:]
+            last_year = list(schedule.keys())[-1][2:]
             if length == 1:
                 schedule[f"SU{last_year}"] = []
             schedule[f"FA{last_year}"] = []
-
 
         if remaining_courses:
             logger.warning(f"Unable to complete all required courses. Remaining: {remaining_courses}")
