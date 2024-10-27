@@ -49,7 +49,7 @@ class TestClassScheduleParsing(unittest.TestCase):
     
     def test_extract_data(self):
         # this uses a cut down version of the course schedule in the test resources directory
-        output: dict[str, list[str]] = extract_sheet_data(load_workbook(self.resource_path / "schedule_input_test.xlsx").active)
+        output: dict[str, list[str]] = get_class_schedule_data(self.resource_path / "schedule_input_test.xlsx")
         self.assertListEqual(output["CPSC 1105"], ["SP25", "SU25", "FA25", "SP26", "SU26", "FA26", "SP27", "SU27", "FA27", "SP28", "SU28", "FA28", "SP29"]) # all present
         self.assertListEqual(output["CPSC 1555"], []) # none present (blanks)
         self.assertListEqual(output["CPSC 2105"], ["SP25", "FA25", "SP26", "FA26", "SP27", "FA27", "SP28", "FA28", "SP29"]) #  no summers, also has blanks  indicated by space or period
@@ -62,7 +62,7 @@ class TestClassScheduleParsing(unittest.TestCase):
     def test_extract_data_with_cutoff(self):
         # this uses a cut down version of the course schedule in the test resources directory
         # similar to test above but with a cutoff, so all results before SU27 (non inclusive) should be skipped
-        output: dict[str, list[str]] = extract_sheet_data(load_workbook(self.resource_path / "schedule_input_test.xlsx").active, cutoff="SU27")
+        output: dict[str, list[str]] = get_class_schedule_data(self.resource_path / "schedule_input_test.xlsx", start_semester="SU27")
         self.assertListEqual(output["CPSC 1105"], ["SU27", "FA27", "SP28", "SU28", "FA28", "SP29"])
         self.assertListEqual(output["CPSC 1555"], [])
         self.assertListEqual(output["CPSC 2105"], ["FA27", "SP28", "FA28", "SP29"])

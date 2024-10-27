@@ -129,22 +129,35 @@ class Dashboard:
             loading_window.title("Processing")
             loading_window.geometry("300x100")
             loading_window.attributes('-topmost', 'true')
+            loading_window.update_idletasks()
+            window_width = loading_window.winfo_width()
+            window_height = loading_window.winfo_height()
+            screen_width = loading_window.winfo_screenwidth()
+            screen_height = loading_window.winfo_screenheight()
+
+            x = (screen_width // 2) - (window_width // 2)
+            y = (screen_height // 2) - (window_height // 2)
+            loading_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
             ttk.Label(loading_window, text="Processing files, please wait...", font=("Helvetica", 12)).pack(pady=20)
             spinner_frame = ttk.Frame(loading_window)
             spinner_frame.pack()
             spinner = ttk.Progressbar(spinner_frame, mode='indeterminate', bootstyle=INFO)
             spinner.pack(pady=10)
             spinner.start()
-            ttk.Label(loading_window, text="Processing files, please wait...", font=("Helvetica", 12)).pack(pady=20)
+
             threading.Thread(target=self.process_files, args=(loading_window,), daemon=True).start()
             
     def process_files(self, loading_window):
-        degree_data = self.controller.process_degreeworks_file(self.degree_file_path)
+        degree_data, free_electives = self.controller.process_degreeworks_file(self.degree_file_path)
 
         schedule_data = self.controller.process_schedule_file(self.schedule_file_path)
 
         url = self.url_entry.get()
         prereq_data, title_map = self.controller.process_prerequisites(url)
+
+
+        time.sleep(1)
 
         loading_window.destroy()
         
@@ -160,7 +173,7 @@ class Dashboard:
             result_text = ttk.Text(self.root, height=30, width=100)
             result_text.pack(pady=20)
 
-            self.course_plan = self.controller.get_plan(degree_data, schedule_data, prereq_data, title_map)
+            self.course_plan = self.controller.get_plan(degree_data, free_electives, schedule_data, prereq_data, title_map)
 
             result_text.tag_configure("green_title", foreground="green", font=("Helvetica", 12, "bold"))
 
@@ -180,8 +193,18 @@ class Dashboard:
 
             download_button = ttk.Button(self.root, text="Download Result in Excel File", command=self.download_result, bootstyle=SUCCESS)
             download_button.pack(pady=10)
+            restart_button = ttk.Button(self.root, text="Restart", command=self.restart_app, bootstyle=DANGER)
+            restart_button.pack(pady=10)
         else:
             messagebox.showerror("Processing Error", f"An error occurred: {degree_data}", parent=self.root)  
+
+    def restart_app(self):
+        # Destroy the current root window
+        for widget in self.root.winfo_children():
+            widget.destroy()
+        
+        # Reinitialize the Dashboard UI
+        self.__init__(self.root)
 
     def download_result(self):
         

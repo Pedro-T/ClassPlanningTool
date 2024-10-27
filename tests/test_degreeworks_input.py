@@ -1,6 +1,7 @@
 import unittest
 from pathlib import Path
 from class_planning_tool.input_data import degreeworks_parser
+from pymupdf import Document
 
 
 class TestDegreeWorksInput(unittest.TestCase):
@@ -12,10 +13,19 @@ class TestDegreeWorksInput(unittest.TestCase):
         # this is functionally the same as calling process_content(extract_text(open_file(file_path)))
         
         with open(self.resource_path / "test_pdf_content1.txt", "r") as f:
-            self.results = degreeworks_parser.process_content(f.read())
+            self.results, self.free_classes = degreeworks_parser.process_content(f.read())
+
+    def test_parsing_error(self):
+        self.assertRaises(degreeworks_parser.DegreeWorksParsingError, lambda: degreeworks_parser.open_file(self.resource_path / "abc.pdf"))
+    
+    def test_empty_content_error(self):
+        self.assertRaises(degreeworks_parser.DegreeWorksParsingError, lambda: degreeworks_parser.extract_text(Document()))
 
     def test_num_results(self):
         self.assertEqual(11, len(self.results))
+    
+    def test_no_free_classes(self):
+        self.assertEqual(0, self.free_classes)
     
     def test_incomplete_courses(self):
         expected_result: list[str] = ["CPSC 6000", "CPSC 6127", "CPSC 6179", "CPSC 6109"]
