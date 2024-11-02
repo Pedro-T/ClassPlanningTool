@@ -3,8 +3,11 @@ from ttkbootstrap.constants import *
 from tkinter import filedialog, messagebox, Toplevel
 import threading
 import time
-from controller.class_plan_controller import ClassPlanController
-from error_handling.type_checker import check_file_type
+import re
+# from controller.class_plan_controller import ClassPlanController
+from class_planning_tool.controller.class_plan_controller import ClassPlanController
+# from error_handling.type_checker import check_file_type
+from class_planning_tool.error_handling.type_checker import check_file_type
 import os
 from collections import OrderedDict
 from pathlib import Path
@@ -122,6 +125,11 @@ class Dashboard:
         self.update_status()
         
     def submit_files(self):
+        url = self.url_entry.get()
+        if not self.is_valid_url(url):
+            messagebox.showerror("Invalid URL", "Please enter a valid URL.", parent=self.root)
+            return
+
         if not (self.degree_file_path and self.schedule_file_path and self.url_entry.get()):
             messagebox.showwarning("Missing Files", "Please upload all required files.",  parent=self.root)
         else:
@@ -235,7 +243,9 @@ class Dashboard:
         self.status_box.config(state='disabled')
 
     def apply_text_color_to_status_box(self, symbol, color):
-        start_idx = '1.0'
+        if not color:
+            color = "black"
+        start_idx = '1.0'    
         while True:
             start_idx = self.status_box.search(symbol, start_idx, stopindex='end')
             if not start_idx:
@@ -244,3 +254,12 @@ class Dashboard:
             self.status_box.tag_add(color, start_idx, end_idx)
             start_idx = end_idx
         self.status_box.tag_configure(color, foreground=color)
+
+    def is_valid_url(self, url):
+        """Validate URL format."""
+        pattern = re.compile(
+            r"^(http|https)://"            
+            r"(([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6})" 
+            r"(:\d+)?(\/[A-Za-z0-9\-._~:/?#\[\]@!$&'()*+,;%=]*)?$"
+        )
+        return bool(pattern.match(url))
