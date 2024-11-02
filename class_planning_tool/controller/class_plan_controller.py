@@ -1,21 +1,7 @@
-
-from collections import OrderedDict
-
-# from input_data.degreeworks_parser import parse_pdf
 from class_planning_tool.input_data.degreeworks_parser import parse_pdf
-
-# from input_data.excel_inputs import get_class_schedule_data
 from class_planning_tool.input_data.excel_inputs import get_class_schedule_data
-
-# from input_data.prereq_scraper import Scraper
 from class_planning_tool.input_data.prereq_scraper import Scraper
-
-
-# from output_generation.class_plan_writer import write_plan_workbook
 from class_planning_tool.output_generation.class_plan_writer import write_plan_workbook
-
-
-# from course_planner.planner import Planner
 from class_planning_tool.course_planner.planner import Planner
 
 
