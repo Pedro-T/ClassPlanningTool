@@ -45,8 +45,9 @@ Source can be cloned via git using the url: https://github.com/Pedro-T/ClassPlan
 
 From Source:
 1. Clone the repository from https://github.com/Pedro-T/ClassPlanningTool.git
-2. Install requirements via pip, using provided requirements.txt
-3. To launch from source, run main.py with no additional arguments
+2. Create a virtual environment
+3. Install requirements via pip, using provided requirements.txt
+4. To launch from source, run main.py with no additional arguments
 
 Using the Installer:
 1. Run the downloaded installer (myInstaller.exe)
