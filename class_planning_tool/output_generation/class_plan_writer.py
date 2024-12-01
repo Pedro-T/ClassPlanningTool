@@ -85,29 +85,27 @@ def write_semester_block(ws: Worksheet, row_start: int, column_start: int, semes
     footer.alignment = _CENTER_ALIGNMENT
 
 
-def write_plan_workbook(course_plan: OrderedDict[str, list[dict[str, str]]], book_path: str = "Course_Plan.xlsx") -> None:
+def write_plan_workbook(course_plan: OrderedDict[str, list[dict[str, str]]], book_path: str) -> None:
     """
     Write the supplied study plan to an Excel sheet.
 
     Args:
         course_plan (OrderedDict[str, list[dict[str, str]]]): course plan to export
+        book_path (str): File path where the workbook will be saved.
     
     Raises:
-        PermissionError: from openpyxl if the file cannot be opened (in use or similar)
-    
-    Semester keys must be of the form (season) (year), written as "Spring 2024". Each semester key can have up to four course info dictionaries. Example course info:
-        "code": "CPSC6136",
-        "title": "Human Aspects of Cybersecurity",
-    
-    Every three semesters is one year, in order. Semesters must be in the correct order, hence the use of OrderedDict.
-    
-    A semester with no classes is represented by an empty list, such as:
-        "Spring 2025": []
-
+        Exception: If the file cannot be written.
     """
+    # Debug print to verify the file path
+    print(f"Attempting to write Excel file to: {book_path}")
 
+    # Validate course plan length
     if len(course_plan.keys()) % 3 != 0:
-        raise ValueError(f"Course plans must be in academic year sequences of three semesters. The expected length is a multiple of three. Provided length: {len(course_plan.keys())}\n{course_plan}")
+        raise ValueError(
+            f"Course plans must be in academic year sequences of three semesters. "
+            f"The expected length is a multiple of three. Provided length: {len(course_plan.keys())}\n{course_plan}"
+        )
+    
     wb: Workbook = Workbook()
     ws: Worksheet = wb.active
     ws.title = "Course Plan"
@@ -124,5 +122,11 @@ def write_plan_workbook(course_plan: OrderedDict[str, list[dict[str, str]]], boo
         if col_counter == 3:
             row_index = ws.max_row + 1
             col_counter = 0
-    
-    wb.save(book_path)
+
+    # Save workbook to the specified path
+    try:
+        wb.save(book_path)
+        print(f"Excel file successfully saved at: {book_path}")
+    except Exception as e:
+        print(f"Failed to save Excel file: {e}")
+        raise
