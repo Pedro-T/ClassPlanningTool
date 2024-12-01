@@ -53,7 +53,7 @@ Using the Installer:
 1. Upload Files:
   Upload the DegreeWorks PDF file for degree requirements
   Upload the 4-Year Course Schedule Excel file
-  Enter the URL for course prerequisites (if applicable)
+  Enter the URL for course prerequisites
 2. Generate Results:
   Click "Submit & Process" to generate your course plan
 3. Download Results:
