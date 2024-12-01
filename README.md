@@ -14,7 +14,6 @@ Non-functional requirements:
 1. The software should be configurable. Specifically, the inputs must be separated from the software and be parsed by the software.
 2. The software should be implemented in Python and can be executed on Windows.
 
-
 ## Purpose
 
 This application provides a student with a viable course plan to complete their studies, taking into account the following data:
@@ -38,11 +37,16 @@ This application provides a student with a viable course plan to complete their 
 
 ## Download
 
-To get the application:
+End-users should download the installer from: https://github.com/Pedro-T/ClassPlanningTool/blob/master/class_planning_tool_installer.exe
 
-Download the source code from the GitHub repository: https://github.com/Pedro-T/ClassPlanningTool.git
+Source can be cloned via git using the url: https://github.com/Pedro-T/ClassPlanningTool.git
 
 ## Build/Configuration/Installation/Deployment
+
+From Source:
+1. Clone the repository from https://github.com/Pedro-T/ClassPlanningTool.git
+2. Install requirements via pip, using provided requirements.txt
+3. To launch from source, run main.py with no additional arguments
 
 Using the Installer:
 1. Run the downloaded installer (myInstaller.exe)
