@@ -33,7 +33,7 @@ This application provides a student with a viable course plan to complete their 
 1. Windows 10 or higher
 2. DegreeWorks degree requirement file (PDF)
 3. 4-Year Course Schedule file (Excel format)
-4. Url for Prerequisites
+4. Url for Prerequisites (https://catalog.columbusstate.edu/course-descriptions/cpsc/)
 
 ## Download
 
