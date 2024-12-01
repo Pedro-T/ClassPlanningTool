@@ -18,6 +18,8 @@ from class_planning_tool.output_generation.class_plan_writer import write_plan_w
 # from course_planner.planner import Planner
 from class_planning_tool.course_planner.planner import Planner
 
+import os
+
 
 class ClassPlanController:
     def __init__(self):
@@ -55,8 +57,27 @@ class ClassPlanController:
         """Wrapper for retrieving course plan based on inputs"""
         return Planner(degree_data, free_electives, schedule_data, prereq_data, title_map).find_best_schedule()
     
-    def generate_course_plan(self, course_plan):
-        """
-        Wrapper for call to Excel writer
-        """
-        write_plan_workbook(course_plan)
+    # def generate_course_plan(self, course_plan, output_path=None):
+    #     try:
+    #         output_path = output_path or os.path.join(os.path.expanduser("~"), "Documents", "Course_Plan.xlsx")
+           
+    #         write_plan_workbook(course_plan, output_path)
+           
+    #         return output_path
+    #     except Exception as e:
+           
+    #         raise
+    def generate_course_plan(self, course_plan, output_path=None):
+        try:
+            # Default to user's Documents folder
+            output_path = output_path or os.path.join(os.path.expanduser("~"), "Documents", "Course_Plan.xlsx")
+            
+            # Debugging: Print the output path
+            print(f"Attempting to write course plan to: {output_path}")
+
+            write_plan_workbook(course_plan, output_path)
+            print(f"Course plan successfully saved at: {output_path}")
+            return output_path
+        except Exception as e:
+            print(f"Failed to generate course plan: {e}")
+            raise

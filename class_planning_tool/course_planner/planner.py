@@ -1,15 +1,22 @@
-import logging
+
 from collections import defaultdict, deque, OrderedDict
 
 # Configure the logger
+import os
+import logging
+
+# Redirect log file to the user's home directory
+user_home = os.path.expanduser("~")
+log_file_path = os.path.join(user_home, "course_scheduler.log")
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    filename='course_scheduler.log',
+    filename=log_file_path,
     filemode='w'
 )
-logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
 class Planner:
     def __init__(self, course_progress, free_electives, course_schedule, prerequisites, titles: dict[str, str]):
         
