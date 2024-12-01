@@ -39,7 +39,8 @@ This application provides a student with a viable course plan to complete their 
 ## Download
 
 To get the application:
--Download the source code from the GitHub repository: 
+
+Download the source code from the GitHub repository: https://github.com/Pedro-T/ClassPlanningTool.git
 
 ## Build/Configuration/Installation/Deployment
 
