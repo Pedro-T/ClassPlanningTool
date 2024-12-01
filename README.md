@@ -29,10 +29,35 @@ This application provides a student with a viable course plan to complete their 
 2. URL of the appropriate course descriptions page for your program
 3. Current course schedule Excel workbook provided by the department
 
-## Setup
+## Prerequisites
 
-TBD
+1. Windows 10 or higher
+2. DegreeWorks degree requirement file (PDF)
+3. 4-Year Course Schedule file (Excel format)
+4. Url for Prerequisites
+
+## Download
+
+To get the application:
+-Download the source code from the GitHub repository: 
+
+## Build/Configuration/Installation/Deployment
+
+Using the Installer:
+1. Run the downloaded installer (myInstaller.exe)
+2. Follow the on-screen instructions to install the application
+3. Once installed, the application will be available to run
 
 ## Usage
+1. Upload Files:
+  Upload the DegreeWorks PDF file for degree requirements
+  Upload the 4-Year Course Schedule Excel file
+  Enter the URL for course prerequisites (if applicable)
+2. Generate Results:
+  Click "Submit & Process" to generate your course plan
+3. Download Results:
+  Click "Download Result in Excel File" to save the generated course plan
+  The Excel file will be saved in the Documents folder and can be opened directly
+4. Restart Application:
+  Use the "Restart" button to reset the tool for a new input set
 
-TBD
