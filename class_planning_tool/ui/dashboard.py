@@ -4,13 +4,9 @@ from tkinter import filedialog, messagebox, Toplevel
 import threading
 import time
 import re
-# from controller.class_plan_controller import ClassPlanController
 from class_planning_tool.controller.class_plan_controller import ClassPlanController
-# from error_handling.type_checker import check_file_type
 from class_planning_tool.error_handling.type_checker import check_file_type
 import os
-from collections import OrderedDict
-from pathlib import Path
 
 class Dashboard:
     def __init__(self, root):

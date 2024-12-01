@@ -1,7 +1,6 @@
 import unittest
 from pathlib import Path
-from class_planning_tool.input_data.excel_inputs import get_cutoff_format, populate_column_semester_map, extract_sheet_data, get_class_schedule_data
-from openpyxl import load_workbook
+from class_planning_tool.input_data.excel_inputs import get_cutoff_format, populate_column_semester_map, get_class_schedule_data
 
 
 class TestClassScheduleParsing(unittest.TestCase):
